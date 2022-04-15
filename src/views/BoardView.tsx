@@ -2,10 +2,12 @@ import { css } from "@emotion/react";
 import CellView from "./CellView";
 import { getBoardSize } from "../entities/Board";
 import config from "../config";
-import { useBoardViewController } from "../controllers/BoardViewController";
+import { State, useStore } from "../store";
+
+const selector = ({ board, toggleCell }: State) => ({ board, toggleCell });
 
 const BoardView = () => {
-  const { board, toggleCell } = useBoardViewController();
+  const { board, toggleCell } = useStore(selector);
 
   return (
     <div

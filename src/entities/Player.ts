@@ -1,11 +1,11 @@
 export default interface Player {
   playing: boolean;
   speed: number;
-  interval: number | null;
 }
 
 export const createPlayer = (): Player => ({
   playing: false,
   speed: 5,
-  interval: null,
 });
+
+export const getTickInterval = (player: Player): number => 1000 / player.speed;

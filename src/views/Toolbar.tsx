@@ -1,5 +1,21 @@
 import { css } from "@emotion/react";
-import { useToolbarController } from "../controllers/ToolbarController";
+import { State, useStore } from "../store";
+
+const selector = ({
+  tick,
+  clearBoard,
+  player,
+  play,
+  pause,
+  changeSpeed,
+}: State) => ({
+  tick,
+  clearBoard,
+  player,
+  play,
+  pause,
+  changeSpeed,
+});
 
 export const Toolbar = () => {
   const {
@@ -10,7 +26,7 @@ export const Toolbar = () => {
     play,
     pause,
     changeSpeed,
-  } = useToolbarController();
+  } = useStore(selector);
 
   return (
     <div

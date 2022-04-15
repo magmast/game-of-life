@@ -1,5 +1,6 @@
-import Cell from "./Cell";
+import Cell, { toggleCell as cellToggleCell } from "./Cell";
 import { range } from "../utils";
+import produce from "immer";
 
 type Board = Cell[];
 
@@ -55,3 +56,8 @@ export const countAliveNeighbours = (board: Board, cellIndex: number): number =>
     (count, index) => (board[index] === Cell.alive ? count + 1 : count),
     0
   );
+
+export const toggleCell = (board: Board, cellIndex: number): Board =>
+  produce<Board>((board) => {
+    board[cellIndex] = cellToggleCell(board[cellIndex]);
+  })(board);
