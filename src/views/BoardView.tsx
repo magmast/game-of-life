@@ -1,34 +1,46 @@
 import { css } from "@emotion/react";
-import CellView from "./CellView";
-import { getBoardSize } from "../entities/Board";
+import { Layer, Rect, Stage } from "react-konva";
 import config from "../config";
-import { State, useStore } from "../store";
-
-const selector = ({ board, toggleCell }: State) => ({ board, toggleCell });
+import { toString } from "../entities/Cell";
+import { useBoardViewController } from "../controllers/BoardViewController";
+import Grid from "./Grid";
 
 const BoardView = () => {
-  const { board, toggleCell } = useStore(selector);
+  const {
+    board,
+    cellSize,
+    zoom,
+    offset,
+    handleStageWheel,
+    handleStageMouseMove,
+    handleStageMouseDown,
+    handleStageMouseUp,
+  } = useBoardViewController();
 
   return (
-    <div
-      css={css({
-        width: config.board.width,
-        height: config.board.height,
-        display: "flex",
-        flexWrap: "wrap",
-        marginBottom: 16,
-      })}
+    <Stage
+      css={css({ marginBottom: 12 })}
+      width={config.board.width}
+      height={config.board.height}
+      onWheel={({ evt }) => handleStageWheel(evt)}
+      onMouseMove={({ evt }) => handleStageMouseMove(evt)}
+      onMouseDown={({ evt }) => handleStageMouseDown(evt)}
+      onMouseUp={({ evt }) => handleStageMouseUp(evt)}
     >
-      {board.map((cell, index) => (
-        <CellView
-          key={index}
-          cell={cell}
-          width={config.board.width / getBoardSize(board) + 1}
-          height={config.board.height / getBoardSize(board) + 1}
-          onClick={() => toggleCell(index)}
-        />
-      ))}
-    </div>
+      <Layer>
+        {board.map((cell) => (
+          <Rect
+            key={toString(cell)}
+            x={cell.x * cellSize + offset.x}
+            y={cell.y * cellSize + offset.y}
+            width={cellSize}
+            height={cellSize}
+            fill="#000"
+          />
+        ))}
+      </Layer>
+      <Grid offset={offset} zoom={zoom} cellSize={cellSize} />
+    </Stage>
   );
 };
 

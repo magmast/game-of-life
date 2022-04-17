@@ -1,8 +1,8 @@
-export function range(end: number): number[];
+export default function range(end: number): number[];
 
-export function range(start: number, end: number): number[];
+export default function range(start: number, end: number): number[];
 
-export function range(startOrEnd: number, maybeEnd?: number): number[] {
+export default function range(startOrEnd: number, maybeEnd?: number): number[] {
   const { start, end } =
     maybeEnd !== undefined
       ? { start: startOrEnd, end: maybeEnd }

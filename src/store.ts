@@ -1,12 +1,12 @@
 import create, { GetState, Mutate, SetState, StoreApi } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import config from "./config";
 import Board, { createBoard, toggleCell, updateBoard } from "./entities/Board";
+import Cell from "./entities/Cell";
 import Player, { createPlayer, getTickInterval } from "./entities/Player";
 
 export interface State {
   board: Board;
-  toggleCell(index: number): void;
+  toggleCell(cell: Cell): void;
   clearBoard(): void;
   tick(): void;
 
@@ -23,12 +23,12 @@ export const useStore = create<
   Mutate<StoreApi<State>, [["zustand/subscribeWithSelector", never]]>
 >(
   subscribeWithSelector((set) => ({
-    board: createBoard(config.boardSize),
-    toggleCell: (index: number) =>
+    board: createBoard(),
+    toggleCell: (cell) =>
       set((state) => ({
-        board: toggleCell(state.board, index),
+        board: toggleCell(state.board, cell),
       })),
-    clearBoard: () => set({ board: createBoard(config.boardSize) }),
+    clearBoard: () => set({ board: createBoard() }),
     tick: () => set((state) => ({ board: updateBoard(state.board) })),
 
     player: createPlayer(),

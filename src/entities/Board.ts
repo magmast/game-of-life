@@ -1,63 +1,57 @@
-import Cell, { toggleCell as cellToggleCell } from "./Cell";
-import { range } from "../utils";
-import produce from "immer";
+import { Map } from "immutable";
+import Cell, { getNeighbours, isEqual, toString, fromString } from "./Cell";
 
+/** `Board` is just a collection of alive `Cell`s. */
 type Board = Cell[];
 
 export default Board;
 
-export const createBoard = (size: number): Board =>
-  range(size * size).map(() => Cell.dead);
+export const createBoard = (): Board => [];
 
-export const getBoardSize = (board: Board): number => Math.sqrt(board.length);
-
-export const updateBoard = (board: Board): Board =>
-  board.map((cell, index) => {
-    const neighbours = countAliveNeighbours(board, index);
-
-    if (cell === Cell.alive && (neighbours === 2 || neighbours === 3)) {
-      return Cell.alive;
-    }
-
-    if (cell === Cell.dead && neighbours === 3) {
-      return Cell.alive;
-    }
-
-    return Cell.dead;
-  });
-
-export const getNeighbourIndexes = (board: Board, cellIndex: number) => {
-  const boardSize = getBoardSize(board);
-
-  const neighbours = [
-    cellIndex - boardSize - 1,
-    cellIndex - boardSize,
-    cellIndex - boardSize + 1,
-    cellIndex + boardSize - 1,
-    cellIndex + boardSize,
-    cellIndex + boardSize + 1,
-  ].filter((index) => index >= 0 && index < board.length);
-
-  const isOnLeftEdge = cellIndex % boardSize === 0;
-  if (!isOnLeftEdge) {
-    neighbours.push(cellIndex - 1);
-  }
-
-  const isOnRightEdge = cellIndex % boardSize === boardSize - 1;
-  if (!isOnRightEdge) {
-    neighbours.push(cellIndex + 1);
-  }
-
-  return neighbours;
+export const updateBoard = (board: Board): Board => {
+  const dayingCells = getDayingCells(board);
+  const borningCells = getBorningCells(board);
+  return [...board, ...borningCells].filter(
+    (cell) => !dayingCells.includes(cell)
+  );
 };
 
-export const countAliveNeighbours = (board: Board, cellIndex: number): number =>
-  getNeighbourIndexes(board, cellIndex).reduce(
-    (count, index) => (board[index] === Cell.alive ? count + 1 : count),
-    0
+export const toggleCell = (board: Board, cell: Cell): Board =>
+  isAlive(board, cell)
+    ? board.filter((c) => !isEqual(cell, c))
+    : [...board, cell];
+
+export const isAlive = (board: Board, cell: Cell): boolean =>
+  board.some((c) => isEqual(c, cell));
+
+const getDayingCells = (board: Board): Cell[] =>
+  board.filter((cell) => {
+    const aliveNeighbours = countAliveNeighbours(board, cell);
+    return aliveNeighbours < 2 || aliveNeighbours > 3;
+  });
+
+const getBorningCells = (board: Board): Cell[] => {
+  const allAliveCellsNeighbours = board.reduce(
+    (acc, cell) => [...acc, ...getNeighbours(cell)],
+    [] as Cell[]
   );
 
-export const toggleCell = (board: Board, cellIndex: number): Board =>
-  produce<Board>((board) => {
-    board[cellIndex] = cellToggleCell(board[cellIndex]);
-  })(board);
+  const neighboursOccurenceCounts = allAliveCellsNeighbours.reduce(
+    (acc, cell) => acc.update(toString(cell), 0, (count) => count + 1),
+    Map<string, number>()
+  );
+
+  const borningCells = neighboursOccurenceCounts
+    .filter((count) => count === 3)
+    .keySeq()
+    .map((str) => fromString(str))
+    .filter((cell) => !isAlive(board, cell));
+
+  return borningCells.toArray();
+};
+
+const countAliveNeighbours = (board: Board, cell: Cell): number =>
+  getNeighbours(cell).reduce(
+    (acc, cell) => (isAlive(board, cell) ? acc + 1 : acc),
+    0
+  );

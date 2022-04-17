@@ -1,5 +1,4 @@
 export default {
-  boardSize: 30,
   player: {
     minSpeed: 1,
     maxSpeed: 10,
@@ -7,5 +6,9 @@ export default {
   board: {
     width: 600,
     height: 600,
+    minZoom: 1,
+    maxZoom: 20,
+    cellStrokeWidth: 0.15,
+    cellSize: 5,
   },
 };
