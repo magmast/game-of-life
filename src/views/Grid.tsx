@@ -1,7 +1,7 @@
 import { Layer, Line } from "react-konva";
 import config from "../config";
 import { useGridController } from "../controllers/GridController";
-import Position from "../entities/Position";
+import { Position } from "../entities/Position";
 
 export interface GridProps {
   zoom: number;

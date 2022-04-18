@@ -1,27 +1,23 @@
-import Position from "../entities/Position";
+import * as P from "../entities/Position";
 
 export interface HtmlToKonvaPositionOptions {
-  /** Position to be mapped. */
-  position: Position;
   /** Konva canvas element. */
   canvas: HTMLCanvasElement;
   /** Camera offset. */
-  offset: Position;
+  offset: P.Position;
 }
 
 /**
  * Transforms `Position` origin from the HTML document to the Konva canvas.
  */
-const mapHtmlToKonvaPosition = ({
-  position,
-  canvas,
-  offset,
-}: HtmlToKonvaPositionOptions): Position => {
-  const canvasRect = canvas.getBoundingClientRect();
-  return {
-    x: position.x - canvasRect.x - offset.x,
-    y: position.y - canvasRect.y - offset.y,
+const mapHtmlToKonvaPosition =
+  ({
+    canvas,
+    offset,
+  }: HtmlToKonvaPositionOptions): ((position: P.Position) => P.Position) =>
+  (position) => {
+    const canvasRect = canvas.getBoundingClientRect();
+    return P.sub(P.sub(position, canvasRect), offset);
   };
-};
 
 export default mapHtmlToKonvaPosition;

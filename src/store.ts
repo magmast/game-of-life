@@ -1,16 +1,16 @@
 import create, { GetState, Mutate, SetState, StoreApi } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
-import Board, { createBoard, toggleCell, updateBoard } from "./entities/Board";
-import Cell from "./entities/Cell";
-import Player, { createPlayer, getTickInterval } from "./entities/Player";
+import * as Board from "./entities/Board";
+import * as Player from "./entities/Player";
+import * as Position from "./entities/Position";
 
 export interface State {
-  board: Board;
-  toggleCell(cell: Cell): void;
+  board: Board.Board;
+  toggleCell(position: Position.Position): void;
   clearBoard(): void;
   tick(): void;
 
-  player: Player;
+  player: Player.Player;
   play: () => void;
   pause: () => void;
   changeSpeed: (value: number) => void;
@@ -23,35 +23,26 @@ export const useStore = create<
   Mutate<StoreApi<State>, [["zustand/subscribeWithSelector", never]]>
 >(
   subscribeWithSelector((set) => ({
-    board: createBoard(),
-    toggleCell: (cell) =>
+    board: Board.create(),
+    toggleCell: (position) =>
       set((state) => ({
-        board: toggleCell(state.board, cell),
+        board: Board.toggleCell(position)(state.board),
       })),
-    clearBoard: () => set({ board: createBoard() }),
-    tick: () => set((state) => ({ board: updateBoard(state.board) })),
+    clearBoard: () => set({ board: Board.create() }),
+    tick: () => set((state) => ({ board: Board.tick(state.board) })),
 
-    player: createPlayer(),
+    player: Player.create(),
     play: () =>
       set((state) => ({
-        player: {
-          ...state.player,
-          playing: true,
-        },
+        player: { ...state.player, playing: true },
       })),
     pause: () =>
       set((state) => ({
-        player: {
-          ...state.player,
-          playing: false,
-        },
+        player: { ...state.player, playing: false },
       })),
     changeSpeed: (speed) =>
       set((state) => ({
-        player: {
-          ...state.player,
-          speed,
-        },
+        player: { ...state.player, speed },
       })),
   }))
 );
@@ -66,7 +57,7 @@ useStore.subscribe(
     }
 
     if (player.playing) {
-      interval = setInterval(tick, getTickInterval(player));
+      interval = setInterval(tick, Player.getTickInterval(player));
     }
   }
 );

@@ -1,57 +1,76 @@
 import { Map } from "immutable";
-import Cell, { getNeighbours, isEqual, toString, fromString } from "./Cell";
+import * as P from "./Position";
 
-/** `Board` is just a collection of alive `Cell`s. */
-type Board = Cell[];
+export interface Board {
+  readonly aliveCellsPositions: P.Position[];
+}
 
-export default Board;
+export const create = (): Board => ({ aliveCellsPositions: [] });
 
-export const createBoard = (): Board => [];
+export const tick = <T extends Board>(board: T): T => {
+  const dayingCells = getDayingCellsPositions(board);
+  const borningCells = getBorningCellsPositions(board);
 
-export const updateBoard = (board: Board): Board => {
-  const dayingCells = getDayingCells(board);
-  const borningCells = getBorningCells(board);
-  return [...board, ...borningCells].filter(
-    (cell) => !dayingCells.includes(cell)
-  );
+  return {
+    ...board,
+    aliveCellsPositions: [...board.aliveCellsPositions, ...borningCells].filter(
+      (cell) => !dayingCells.includes(cell)
+    ),
+  };
 };
 
-export const toggleCell = (board: Board, cell: Cell): Board =>
-  isAlive(board, cell)
-    ? board.filter((c) => !isEqual(cell, c))
-    : [...board, cell];
-
-export const isAlive = (board: Board, cell: Cell): boolean =>
-  board.some((c) => isEqual(c, cell));
-
-const getDayingCells = (board: Board): Cell[] =>
-  board.filter((cell) => {
-    const aliveNeighbours = countAliveNeighbours(board, cell);
+const getDayingCellsPositions = (board: Board): P.Position[] =>
+  board.aliveCellsPositions.filter((position) => {
+    const aliveNeighbours = countAliveNeighbours(board, position);
     return aliveNeighbours < 2 || aliveNeighbours > 3;
   });
 
-const getBorningCells = (board: Board): Cell[] => {
-  const allAliveCellsNeighbours = board.reduce(
-    (acc, cell) => [...acc, ...getNeighbours(cell)],
-    [] as Cell[]
+const getBorningCellsPositions = (board: Board): P.Position[] => {
+  const allAliveNeighboursPositions = board.aliveCellsPositions.reduce(
+    (acc, position) => [...acc, ...getNeighbours(position)],
+    [] as P.Position[]
   );
 
-  const neighboursOccurenceCounts = allAliveCellsNeighbours.reduce(
-    (acc, cell) => acc.update(toString(cell), 0, (count) => count + 1),
+  const neighboursOccurencesCounts = allAliveNeighboursPositions.reduce(
+    (acc, position) =>
+      acc.update(P.toString(position), 0, (count) => count + 1),
     Map<string, number>()
   );
 
-  const borningCells = neighboursOccurenceCounts
+  const borningCells = neighboursOccurencesCounts
     .filter((count) => count === 3)
     .keySeq()
-    .map((str) => fromString(str))
-    .filter((cell) => !isAlive(board, cell));
+    .map(P.fromString)
+    .filter((position) => !isAlive(board, position));
 
   return borningCells.toArray();
 };
 
-const countAliveNeighbours = (board: Board, cell: Cell): number =>
-  getNeighbours(cell).reduce(
-    (acc, cell) => (isAlive(board, cell) ? acc + 1 : acc),
+const countAliveNeighbours = (board: Board, position: P.Position): number =>
+  getNeighbours(position).reduce(
+    (acc, position) => (isAlive(board, position) ? acc + 1 : acc),
     0
   );
+
+const isAlive = (board: Board, position: P.Position): boolean =>
+  board.aliveCellsPositions.some((p) => P.isEqual(p, position));
+
+const getNeighbours = (position: P.Position): P.Position[] => [
+  { x: position.x - 1, y: position.y - 1 },
+  { x: position.x, y: position.y - 1 },
+  { x: position.x + 1, y: position.y - 1 },
+  { x: position.x - 1, y: position.y },
+  { x: position.x + 1, y: position.y },
+  { x: position.x - 1, y: position.y + 1 },
+  { x: position.x, y: position.y + 1 },
+  { x: position.x + 1, y: position.y + 1 },
+];
+
+export const toggleCell =
+  (position: P.Position) =>
+  <T extends Board>(board: T): T => ({
+    ...board,
+    aliveCellsPositions: isAlive(board, position)
+      ? board.aliveCellsPositions.filter((p) => !P.isEqual(p, position))
+      : [...board.aliveCellsPositions, position],
+  });

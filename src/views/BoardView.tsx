@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { Layer, Rect, Stage } from "react-konva";
 import config from "../config";
-import { toString } from "../entities/Cell";
 import { useBoardViewController } from "../controllers/BoardViewController";
+import * as P from "../entities/Position";
 import Grid from "./Grid";
 
 const BoardView = () => {
@@ -28,9 +28,9 @@ const BoardView = () => {
       onMouseUp={({ evt }) => handleStageMouseUp(evt)}
     >
       <Layer>
-        {board.map((cell) => (
+        {board.aliveCellsPositions.map((cell) => (
           <Rect
-            key={toString(cell)}
+            key={P.toString(cell)}
             x={cell.x * cellSize + offset.x}
             y={cell.y * cellSize + offset.y}
             width={cellSize}

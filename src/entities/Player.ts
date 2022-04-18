@@ -1,9 +1,9 @@
-export default interface Player {
-  playing: boolean;
-  speed: number;
+export interface Player {
+  readonly playing: boolean;
+  readonly speed: number;
 }
 
-export const createPlayer = (): Player => ({
+export const create = (): Player => ({
   playing: false,
   speed: 5,
 });

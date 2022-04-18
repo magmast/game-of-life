@@ -1,4 +1,5 @@
-import Position from "../entities/Position";
+import { pipe } from "fp-ts/lib/function";
+import { Position } from "../entities/Position";
 import mapHtmlToKonvaPosition from "./mapHtmlToKonvaPosition";
 import mapKonvaToBoardPosition from "./mapKonvaToBoardPosition";
 
@@ -7,26 +8,22 @@ export interface HtmlToBoardPositionOptions {
   canvas: HTMLCanvasElement;
   /** Cell size in pixels. */
   cellSize: number;
-  /** Position to be converted. */
-  position: Position;
   /** Camera offset. */
   offset: Position;
 }
 
 /** Converts HTML position to board domain position. */
-const mapHtmlToBoardPosition = ({
-  canvas,
-  cellSize,
-  position,
-  offset,
-}: HtmlToBoardPositionOptions) =>
-  mapKonvaToBoardPosition({
+const mapHtmlToBoardPosition =
+  ({
+    canvas,
     cellSize,
-    position: mapHtmlToKonvaPosition({
+    offset,
+  }: HtmlToBoardPositionOptions): ((position: Position) => Position) =>
+  (position) =>
+    pipe(
       position,
-      canvas,
-      offset,
-    }),
-  });
+      mapHtmlToKonvaPosition({ canvas, offset }),
+      mapKonvaToBoardPosition(cellSize)
+    );
 
 export default mapHtmlToBoardPosition;

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import config from "../config";
-import Position from "../entities/Position";
+import { Position } from "../entities/Position";
 import range from "../utils/range";
 
 export interface GridController {

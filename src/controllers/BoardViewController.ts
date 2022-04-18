@@ -1,7 +1,8 @@
+import { pipe } from "fp-ts/lib/function";
 import { useRef, useState } from "react";
 import config from "../config";
-import Board from "../entities/Board";
-import Position, { add } from "../entities/Position";
+import { Board } from "../entities/Board";
+import * as P from "../entities/Position";
 import mapHtmlToBoardPosition from "../services/mapHtmlToBoardPosition";
 import { State, useStore } from "../store";
 
@@ -9,7 +10,7 @@ export default interface BoardViewController {
   board: Board;
   zoom: number;
   cellSize: number;
-  offset: Position;
+  offset: P.Position;
   handleStageWheel: (event: WheelEvent) => void;
   handleStageMouseMove: (event: MouseEvent) => void;
   handleStageMouseDown: (event: MouseEvent) => void;
@@ -23,7 +24,7 @@ export const useBoardViewController = (): BoardViewController => {
 
   const cellSize = config.board.cellSize * zoom;
 
-  const [offset, setOffset] = useState<Position>({ x: 0, y: 0 });
+  const [offset, setOffset] = useState<P.Position>({ x: 0, y: 0 });
 
   const clickTimestamp = useRef<number | null>(null);
 
@@ -35,7 +36,6 @@ export const useBoardViewController = (): BoardViewController => {
     handleStageMouseDown: (event) => {
       if (event.buttons === 1) {
         clickTimestamp.current = Date.now();
-        console.log(clickTimestamp.current);
       }
     },
     handleStageMouseUp: (event) => {
@@ -44,14 +44,15 @@ export const useBoardViewController = (): BoardViewController => {
         Date.now() - clickTimestamp.current < 200
       ) {
         clickTimestamp.current = null;
-        const canvas = event.target as HTMLCanvasElement;
-        const position = mapHtmlToBoardPosition({
-          cellSize,
-          canvas,
-          offset,
-          position: event,
-        });
-        useStore.getState().toggleCell(position);
+        pipe(
+          event,
+          mapHtmlToBoardPosition({
+            cellSize,
+            canvas: event.target as HTMLCanvasElement,
+            offset,
+          }),
+          useStore.getState().toggleCell
+        );
       }
     },
     handleStageWheel: (event) => {
@@ -68,7 +69,7 @@ export const useBoardViewController = (): BoardViewController => {
         return;
       }
 
-      setOffset(add(offset, { x: event.movementX, y: event.movementY }));
+      setOffset(P.add(offset, { x: event.movementX, y: event.movementY }));
     },
   };
 };
