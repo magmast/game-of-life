@@ -1,32 +1,10 @@
 import { css } from "@emotion/react";
-import { State, useStore } from "../store";
-
-const selector = ({
-  tick,
-  clearBoard,
-  player,
-  play,
-  pause,
-  changeSpeed,
-}: State) => ({
-  tick,
-  clearBoard,
-  player,
-  play,
-  pause,
-  changeSpeed,
-});
+import { useAtom } from "jotai";
+import * as G from "../entities/Game";
+import { gameAtom } from "../atoms";
 
 export const Toolbar = () => {
-  const {
-    tick,
-    clearBoard,
-
-    player,
-    play,
-    pause,
-    changeSpeed,
-  } = useStore(selector);
+  const [game, setGame] = useAtom(gameAtom);
 
   return (
     <div
@@ -44,19 +22,21 @@ export const Toolbar = () => {
       >
         <button
           type="button"
-          onClick={clearBoard}
+          onClick={() => setGame(G.clearBoard)}
           css={css({ marginRight: 16 })}
         >
           CLEAR
         </button>
         <button
           type="button"
-          onClick={() => (player.playing ? pause() : play())}
+          onClick={() =>
+            setGame(game.player.playing ? G.pause(game) : G.play(game))
+          }
           css={css({ marginRight: 16 })}
         >
-          {player.playing ? "PAUSE" : "PLAY"}
+          {game.player.playing ? "PAUSE" : "PLAY"}
         </button>
-        <button type="button" onClick={tick}>
+        <button type="button" onClick={() => setGame(G.tick)}>
           NEXT
         </button>
       </div>
@@ -65,8 +45,10 @@ export const Toolbar = () => {
           type="range"
           min={1}
           max={10}
-          value={player.speed}
-          onChange={(event) => changeSpeed(event.target.valueAsNumber)}
+          value={game.player.speed}
+          onChange={(event) =>
+            setGame(G.changeSpeed(event.target.valueAsNumber))
+          }
         />
       </div>
     </div>

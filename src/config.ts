@@ -6,9 +6,11 @@ export default {
   board: {
     width: 600,
     height: 600,
+    cellStrokeWidth: 0.15,
+  },
+  viewport: {
+    baseCellSize: 5,
     minZoom: 1,
     maxZoom: 20,
-    cellStrokeWidth: 0.15,
-    cellSize: 5,
   },
 };

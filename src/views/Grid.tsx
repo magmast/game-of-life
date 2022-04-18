@@ -1,16 +1,8 @@
 import { Layer, Line } from "react-konva";
-import config from "../config";
 import { useGridController } from "../controllers/GridController";
-import { Position } from "../entities/Position";
 
-export interface GridProps {
-  zoom: number;
-  cellSize: number;
-  offset: Position;
-}
-
-const Grid = ({ zoom, offset, cellSize }: GridProps) => {
-  const { lines } = useGridController({ zoom, offset, cellSize });
+const Grid = () => {
+  const { lines, strokeWidth } = useGridController();
 
   return (
     <Layer>
@@ -21,7 +13,7 @@ const Grid = ({ zoom, offset, cellSize }: GridProps) => {
           y={start.y}
           points={[0, 0, end.x, end.y]}
           stroke="#999"
-          strokeWidth={config.board.cellStrokeWidth * zoom}
+          strokeWidth={strokeWidth}
         />
       ))}
     </Layer>

@@ -7,10 +7,9 @@ import Grid from "./Grid";
 
 const BoardView = () => {
   const {
-    board,
-    cellSize,
-    zoom,
+    aliveCellsPositions,
     offset,
+    cellSize,
     handleStageWheel,
     handleStageMouseMove,
     handleStageMouseDown,
@@ -28,7 +27,7 @@ const BoardView = () => {
       onMouseUp={({ evt }) => handleStageMouseUp(evt)}
     >
       <Layer>
-        {board.aliveCellsPositions.map((cell) => (
+        {aliveCellsPositions.map((cell) => (
           <Rect
             key={P.toString(cell)}
             x={cell.x * cellSize + offset.x}
@@ -39,7 +38,7 @@ const BoardView = () => {
           />
         ))}
       </Layer>
-      <Grid offset={offset} zoom={zoom} cellSize={cellSize} />
+      <Grid />
     </Stage>
   );
 };

@@ -12,11 +12,11 @@
     "fp-ts": "^2.11.10",
     "immer": "^9.0.12",
     "immutable": "^4.0.0",
+    "jotai": "^1.6.4",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-konva": "^18.0.0-0",
-    "use-immer": "^0.7.0",
-    "zustand": "^3.7.2"
+    "use-immer": "^0.7.0"
   },
   "devDependencies": {
     "@emotion/babel-plugin": "^11.9.2",
