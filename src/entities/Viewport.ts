@@ -55,3 +55,10 @@ export const getBoardPosition = (
     y: Math.floor(position.y / cellSize),
   };
 };
+
+export const resize =
+  (size: Dimensions) =>
+  (viewport: Viewport): Viewport => ({
+    ...viewport,
+    size,
+  });

@@ -8,7 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.9.0",
+    "@mantine/core": "^4.1.4",
+    "@mantine/hooks": "^4.1.4",
     "fp-ts": "^2.11.10",
     "immer": "^9.0.12",
     "immutable": "^4.0.0",
@@ -19,7 +20,6 @@
     "use-immer": "^0.7.0"
   },
   "devDependencies": {
-    "@emotion/babel-plugin": "^11.9.2",
     "@types/react": "^18.0.3",
     "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",

@@ -1,6 +1,8 @@
+import { useElementSize } from "@mantine/hooks";
 import { pipe } from "fp-ts/function";
 import { useAtom } from "jotai";
-import { useRef } from "react";
+import Konva from "konva";
+import { MutableRefObject, useEffect, useRef } from "react";
 import { boardAtom, viewportAtom } from "../atoms";
 import * as Board from "../entities/Board";
 import { Position } from "../entities/Position";
@@ -8,6 +10,8 @@ import * as Viewport from "../entities/Viewport";
 import mapHtmlToViewportPosition from "../services/mapHtmlToViewportPosition";
 
 export default interface BoardViewController {
+  stage: MutableRefObject<Konva.Stage | null>;
+  root: MutableRefObject<HTMLDivElement | null>;
   offset: Position;
   aliveCellsPositions: Position[];
   cellSize: number;
@@ -23,7 +27,23 @@ export const useBoardViewController = (): BoardViewController => {
 
   const clickTimestamp = useRef<number | null>(null);
 
+  const stage = useRef<Konva.Stage | null>(null);
+
+  const { ref: root, width: rootWidth, height: rootHeight } = useElementSize();
+
+  useEffect(() => {
+    if (!stage.current) {
+      return;
+    }
+
+    setViewport(Viewport.resize({ width: rootWidth, height: rootHeight }));
+    stage.current.width(rootWidth);
+    stage.current.height(rootHeight);
+  }, [rootHeight, rootWidth, setViewport]);
+
   return {
+    stage,
+    root,
     aliveCellsPositions: board.aliveCellsPositions,
     offset: viewport.offset,
     cellSize: Viewport.getCellSize(viewport),

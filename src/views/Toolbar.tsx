@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { Box, Button, Paper, Slider, Text } from "@mantine/core";
 import { useToolbarController } from "../controllers/ToolbarController";
 
 export const Toolbar = () => {
@@ -6,42 +6,50 @@ export const Toolbar = () => {
     useToolbarController();
 
   return (
-    <div
-      css={css({
+    <Paper
+      shadow="lg"
+      p="md"
+      sx={{
+        position: "absolute",
+        bottom: "1rem",
+        right: "1rem",
+
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-      })}
+      }}
     >
-      <div
-        css={css({
+      <Box
+        sx={{
           marginBottom: 12,
-        })}
+        }}
       >
-        <button type="button" onClick={clear} css={css({ marginRight: 16 })}>
+        <Button type="button" onClick={clear} mr="sm">
           CLEAR
-        </button>
-        <button
-          type="button"
-          onClick={playOrPause}
-          css={css({ marginRight: 16 })}
-        >
+        </Button>
+        <Button type="button" onClick={playOrPause} mr="sm">
           {playButtonText}
-        </button>
-        <button type="button" onClick={next}>
+        </Button>
+        <Button type="button" onClick={next}>
           NEXT
-        </button>
-      </div>
-      <div>
-        <input
-          type="range"
+        </Button>
+      </Box>
+      <Box sx={{ width: "100%" }}>
+        <Text color="gray" size="sm">
+          Speed
+        </Text>
+        <Slider
           min={1}
           max={10}
           value={speed}
-          onChange={(event) => changeSpeed(event.target.valueAsNumber)}
+          marks={[
+            { value: 0, label: "Slow" },
+            { value: 10, label: "Fast" },
+          ]}
+          onChange={(value) => changeSpeed(value)}
         />
-      </div>
-    </div>
+      </Box>
+    </Paper>
   );
 };
