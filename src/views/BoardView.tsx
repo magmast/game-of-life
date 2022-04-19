@@ -3,7 +3,7 @@ import { Layer, Rect, Stage } from "react-konva";
 import config from "../config";
 import { useBoardViewController } from "../controllers/BoardViewController";
 import * as P from "../entities/Position";
-import Grid from "./Grid";
+import GridView from "./GridView";
 
 const BoardView = () => {
   const {
@@ -38,7 +38,7 @@ const BoardView = () => {
           />
         ))}
       </Layer>
-      <Grid />
+      <GridView />
     </Stage>
   );
 };

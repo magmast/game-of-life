@@ -1,12 +1,12 @@
 import { Layer, Line } from "react-konva";
-import { useGridController } from "../controllers/GridController";
+import { useGridViewController } from "../controllers/GridViewController";
 
-const Grid = () => {
-  const { lines, strokeWidth } = useGridController();
+const GridView = () => {
+  const { grid, strokeWidth } = useGridViewController();
 
   return (
     <Layer>
-      {lines.map(({ start, end }, index) => (
+      {grid.map(({ start, end }, index) => (
         <Line
           key={index}
           x={start.x}
@@ -20,4 +20,4 @@ const Grid = () => {
   );
 };
 
-export default Grid;
+export default GridView;
