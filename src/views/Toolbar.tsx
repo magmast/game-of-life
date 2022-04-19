@@ -1,10 +1,9 @@
 import { css } from "@emotion/react";
-import { useAtom } from "jotai";
-import * as G from "../entities/Game";
-import { gameAtom } from "../atoms";
+import { useToolbarController } from "../controllers/ToolbarController";
 
 export const Toolbar = () => {
-  const [game, setGame] = useAtom(gameAtom);
+  const { speed, playButtonText, clear, playOrPause, next, changeSpeed } =
+    useToolbarController();
 
   return (
     <div
@@ -20,23 +19,17 @@ export const Toolbar = () => {
           marginBottom: 12,
         })}
       >
-        <button
-          type="button"
-          onClick={() => setGame(G.clearBoard)}
-          css={css({ marginRight: 16 })}
-        >
+        <button type="button" onClick={clear} css={css({ marginRight: 16 })}>
           CLEAR
         </button>
         <button
           type="button"
-          onClick={() =>
-            setGame(game.player.playing ? G.pause(game) : G.play(game))
-          }
+          onClick={playOrPause}
           css={css({ marginRight: 16 })}
         >
-          {game.player.playing ? "PAUSE" : "PLAY"}
+          {playButtonText}
         </button>
-        <button type="button" onClick={() => setGame(G.tick)}>
+        <button type="button" onClick={next}>
           NEXT
         </button>
       </div>
@@ -45,10 +38,8 @@ export const Toolbar = () => {
           type="range"
           min={1}
           max={10}
-          value={game.player.speed}
-          onChange={(event) =>
-            setGame(G.changeSpeed(event.target.valueAsNumber))
-          }
+          value={speed}
+          onChange={(event) => changeSpeed(event.target.valueAsNumber)}
         />
       </div>
     </div>

@@ -1,10 +1,11 @@
+import { pipe } from "fp-ts/function";
 import { useAtom } from "jotai";
 import { useRef } from "react";
-import * as G from "../entities/Game";
+import { boardAtom, viewportAtom } from "../atoms";
+import * as Board from "../entities/Board";
 import { Position } from "../entities/Position";
-import * as V from "../entities/Viewport";
+import * as Viewport from "../entities/Viewport";
 import mapHtmlToViewportPosition from "../services/mapHtmlToViewportPosition";
-import { gameAtom } from "../atoms";
 
 export default interface BoardViewController {
   offset: Position;
@@ -17,14 +18,15 @@ export default interface BoardViewController {
 }
 
 export const useBoardViewController = (): BoardViewController => {
-  const [game, setGame] = useAtom(gameAtom);
+  const [board, setBoard] = useAtom(boardAtom);
+  const [viewport, setViewport] = useAtom(viewportAtom);
 
   const clickTimestamp = useRef<number | null>(null);
 
   return {
-    aliveCellsPositions: game.board.aliveCellsPositions,
-    offset: game.viewport.offset,
-    cellSize: V.getCellSize(game.viewport),
+    aliveCellsPositions: board.aliveCellsPositions,
+    offset: viewport.offset,
+    cellSize: Viewport.getCellSize(viewport),
     handleStageMouseDown: (event) => {
       if (event.buttons === 1) {
         clickTimestamp.current = Date.now();
@@ -36,23 +38,26 @@ export const useBoardViewController = (): BoardViewController => {
         Date.now() - clickTimestamp.current < 200
       ) {
         clickTimestamp.current = null;
-        setGame(
-          G.toggleCell(
+        setBoard(
+          pipe(
+            event,
             mapHtmlToViewportPosition({
               canvas: event.target as HTMLCanvasElement,
-              offset: game.viewport.offset,
-            })(event)
+              offset: viewport.offset,
+            }),
+            (position) => Viewport.getBoardPosition(position, viewport),
+            (position) => Board.toggleCell(position)
           )
         );
       }
     },
-    handleStageWheel: (event) => setGame(G.zoom(event.deltaY)),
+    handleStageWheel: (event) => setViewport(Viewport.zoom(event.deltaY)),
     handleStageMouseMove: (event) => {
       if (event.buttons !== 1) {
         return;
       }
 
-      setGame(G.move({ x: event.movementX, y: event.movementY }));
+      setViewport(Viewport.move({ x: event.movementX, y: event.movementY }));
     },
   };
 };

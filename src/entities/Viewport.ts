@@ -1,9 +1,9 @@
 import { Dimensions } from "./Dimensions";
-import * as P from "./Position";
+import * as Position from "./Position";
 
 export interface Viewport {
   readonly zoom: number;
-  readonly offset: P.Position;
+  readonly offset: Position.Position;
   readonly size: Dimensions;
   readonly config: ViewportConfig;
 }
@@ -11,7 +11,7 @@ export interface Viewport {
 export interface ViewportConfig {
   readonly minZoom: number;
   readonly maxZoom: number;
-  readonly baseCellSize: number;
+  readonly cellSize: number;
 }
 
 export const create = (size: Dimensions, config: ViewportConfig): Viewport => ({
@@ -22,10 +22,10 @@ export const create = (size: Dimensions, config: ViewportConfig): Viewport => ({
 });
 
 export const move =
-  (delta: P.Position): (<T extends Viewport>(viewport: T) => T) =>
+  (delta: Position.Position): (<T extends Viewport>(viewport: T) => T) =>
   (viewport) => ({
     ...viewport,
-    offset: P.add(viewport.offset, delta),
+    offset: Position.add(viewport.offset, delta),
   });
 
 export const zoom =
@@ -43,9 +43,12 @@ export const zoom =
   });
 
 export const getCellSize = (viewport: Viewport): number =>
-  viewport.config.baseCellSize * viewport.zoom;
+  viewport.config.cellSize * viewport.zoom;
 
-export const getBoardPosition = (position: P.Position, viewport: Viewport) => {
+export const getBoardPosition = (
+  position: Position.Position,
+  viewport: Viewport
+) => {
   const cellSize = getCellSize(viewport);
   return {
     x: Math.floor(position.x / cellSize),

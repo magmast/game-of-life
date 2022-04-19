@@ -1,10 +1,10 @@
-import * as P from "../entities/Position";
+import * as Position from "../entities/Position";
 
 export interface HtmlToViewportPositionOptions {
   /** Konva canvas element. */
   canvas: HTMLCanvasElement;
   /** Camera offset. */
-  offset: P.Position;
+  offset: Position.Position;
 }
 
 /**
@@ -14,10 +14,12 @@ const mapHtmlToViewportPosition =
   ({
     canvas,
     offset,
-  }: HtmlToViewportPositionOptions): ((position: P.Position) => P.Position) =>
+  }: HtmlToViewportPositionOptions): ((
+    position: Position.Position
+  ) => Position.Position) =>
   (position) => {
     const canvasRect = canvas.getBoundingClientRect();
-    return P.sub(P.sub(position, canvasRect), offset);
+    return Position.sub(Position.sub(position, canvasRect), offset);
   };
 
 export default mapHtmlToViewportPosition;

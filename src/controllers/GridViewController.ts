@@ -2,9 +2,9 @@ import * as Array from "fp-ts/Array";
 import { pipe } from "fp-ts/function";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { viewportAtom } from "../atoms";
 import config from "../config";
 import * as Grid from "../entities/Grid";
-import { gameAtom } from "../atoms";
 
 export interface GridViewController {
   grid: Grid.Grid;
@@ -12,7 +12,7 @@ export interface GridViewController {
 }
 
 export const useGridViewController = (): GridViewController => {
-  const game = useAtomValue(gameAtom);
+  const viewport = useAtomValue(viewportAtom);
 
   const grid = useMemo(() => {
     const mapEndToKonvaCoordinates = (line: Grid.Line) => ({
@@ -23,15 +23,11 @@ export const useGridViewController = (): GridViewController => {
       },
     });
 
-    return pipe(
-      game.viewport,
-      Grid.create,
-      Array.map(mapEndToKonvaCoordinates)
-    );
-  }, [game.viewport]);
+    return pipe(viewport, Grid.create, Array.map(mapEndToKonvaCoordinates));
+  }, [viewport]);
 
   return {
     grid: grid,
-    strokeWidth: config.board.cellStrokeWidth * game.viewport.zoom,
+    strokeWidth: config.grid.lineWidth * viewport.zoom,
   };
 };

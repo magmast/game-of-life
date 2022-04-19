@@ -3,13 +3,15 @@ export default {
     minSpeed: 1,
     maxSpeed: 10,
   },
-  board: {
-    width: 600,
-    height: 600,
-    cellStrokeWidth: 0.15,
+  grid: {
+    lineWidth: 0.15,
+  },
+  cell: {
+    size: 5,
   },
   viewport: {
-    baseCellSize: 5,
+    width: 600,
+    height: 600,
     minZoom: 1,
     maxZoom: 20,
   },

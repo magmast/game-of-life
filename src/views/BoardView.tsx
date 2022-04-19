@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Layer, Rect, Stage } from "react-konva";
 import config from "../config";
 import { useBoardViewController } from "../controllers/BoardViewController";
-import * as P from "../entities/Position";
+import * as Position from "../entities/Position";
 import GridView from "./GridView";
 
 const BoardView = () => {
@@ -19,8 +19,8 @@ const BoardView = () => {
   return (
     <Stage
       css={css({ marginBottom: 12 })}
-      width={config.board.width}
-      height={config.board.height}
+      width={config.viewport.width}
+      height={config.viewport.height}
       onWheel={({ evt }) => handleStageWheel(evt)}
       onMouseMove={({ evt }) => handleStageMouseMove(evt)}
       onMouseDown={({ evt }) => handleStageMouseDown(evt)}
@@ -29,7 +29,7 @@ const BoardView = () => {
       <Layer>
         {aliveCellsPositions.map((cell) => (
           <Rect
-            key={P.toString(cell)}
+            key={Position.toString(cell)}
             x={cell.x * cellSize + offset.x}
             y={cell.y * cellSize + offset.y}
             width={cellSize}

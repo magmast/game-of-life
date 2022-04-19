@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import BoardView from "./BoardView";
-import Player from "./Player";
+import PlayerView from "./PlayerView";
 import { Toolbar } from "./Toolbar";
 
 const App = () => (
@@ -13,7 +13,7 @@ const App = () => (
       flexDirection: "column",
     })}
   >
-    <Player />
+    <PlayerView />
     <BoardView />
     <Toolbar />
   </div>
