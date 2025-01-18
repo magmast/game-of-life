@@ -1,5 +1,6 @@
 import { useAtom, useSetAtom } from "jotai";
 import { useEffect } from "react";
+
 import { boardAtom, playerAtom } from "../atoms";
 import * as Board from "../entities/Board";
 import * as Player from "../entities/Player";
@@ -19,7 +20,7 @@ const PlayerView = (): null => {
 
     const interval = setInterval(
       () => setBoard(Board.tick),
-      Player.getTickInterval(player)
+      Player.getTickInterval(player),
     );
 
     return () => clearInterval(interval);

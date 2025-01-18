@@ -1,4 +1,5 @@
 import { Box, Button, Paper, Slider, Text } from "@mantine/core";
+
 import { useToolbarController } from "../controllers/ToolbarController";
 
 export const Toolbar = () => {

@@ -1,5 +1,6 @@
 import * as Array from "fp-ts/Array";
 import { pipe } from "fp-ts/function";
+
 import range from "../utils/range";
 import * as Axis from "./Axis";
 import * as Dimensions from "./Dimensions";
@@ -15,7 +16,7 @@ export const create = (viewport: Viewport.Viewport): Grid =>
     ["x", "y"] as Axis.Axis[],
     Array.map(createPlainAxisLines(viewport)),
     Array.flatten,
-    Array.map(applyViewportOffsetToLine(viewport))
+    Array.map(applyViewportOffsetToLine(viewport)),
   );
 
 interface IndexLineOptions {
@@ -30,7 +31,7 @@ const createIndexLine =
 
     const position = index * cellSize;
     const length = Dimensions.getByAxis(Axis.perpendicular(axis))(
-      viewport.size
+      viewport.size,
     );
 
     return {
@@ -74,5 +75,5 @@ const createPlainAxisLines =
       Dimensions.getByAxis(axis),
       (dimension) => Math.ceil(dimension / Viewport.getCellSize(viewport)) + 2,
       range,
-      Array.map(createIndexLine({ axis, viewport }))
+      Array.map(createIndexLine({ axis, viewport })),
     );

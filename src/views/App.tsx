@@ -1,4 +1,5 @@
 import { AppShell, Header, MantineProvider, Text } from "@mantine/core";
+
 import BoardView from "./BoardView";
 import PlayerView from "./PlayerView";
 import { Toolbar } from "./Toolbar";

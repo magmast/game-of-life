@@ -1,4 +1,5 @@
 import { Map } from "immutable";
+
 import * as Position from "./Position";
 
 export interface Board {
@@ -19,7 +20,7 @@ export const tick = <T extends Board>(board: T): T => {
   return {
     ...board,
     aliveCellsPositions: [...board.aliveCellsPositions, ...borningCells].filter(
-      (cell) => !dayingCells.includes(cell)
+      (cell) => !dayingCells.includes(cell),
     ),
   };
 };
@@ -33,13 +34,13 @@ const getDayingCellsPositions = (board: Board): Position.Position[] =>
 const getBorningCellsPositions = (board: Board): Position.Position[] => {
   const allAliveNeighboursPositions = board.aliveCellsPositions.reduce(
     (acc, position) => [...acc, ...getNeighbours(position)],
-    [] as Position.Position[]
+    [] as Position.Position[],
   );
 
   const neighboursOccurencesCounts = allAliveNeighboursPositions.reduce(
     (acc, position) =>
       acc.update(Position.toString(position), 0, (count) => count + 1),
-    Map<string, number>()
+    Map<string, number>(),
   );
 
   const borningCells = neighboursOccurencesCounts
@@ -53,11 +54,11 @@ const getBorningCellsPositions = (board: Board): Position.Position[] => {
 
 const countAliveNeighbours = (
   board: Board,
-  position: Position.Position
+  position: Position.Position,
 ): number =>
   getNeighbours(position).reduce(
     (acc, position) => (isAlive(board, position) ? acc + 1 : acc),
-    0
+    0,
   );
 
 const isAlive = (board: Board, position: Position.Position): boolean =>

@@ -2,6 +2,7 @@ import * as Array from "fp-ts/Array";
 import { pipe } from "fp-ts/function";
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+
 import { viewportAtom } from "../atoms";
 import config from "../config";
 import * as Grid from "../entities/Grid";

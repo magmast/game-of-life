@@ -36,9 +36,9 @@ export const zoom =
       Math.min(
         viewport.zoom -
           value / ((viewport.config.maxZoom + 1 - viewport.zoom) * 20),
-        viewport.config.maxZoom
+        viewport.config.maxZoom,
       ),
-      viewport.config.minZoom
+      viewport.config.minZoom,
     ),
   });
 
@@ -47,7 +47,7 @@ export const getCellSize = (viewport: Viewport): number =>
 
 export const getBoardPosition = (
   position: Position.Position,
-  viewport: Viewport
+  viewport: Viewport,
 ) => {
   const cellSize = getCellSize(viewport);
   return {

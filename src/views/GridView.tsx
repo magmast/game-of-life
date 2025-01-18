@@ -1,4 +1,5 @@
 import { Layer, Line } from "react-konva";
+
 import { useGridViewController } from "../controllers/GridViewController";
 
 const GridView = () => {

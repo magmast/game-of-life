@@ -1,4 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
+
 import { boardAtom, playerAtom } from "../atoms";
 import * as Board from "../entities/Board";
 import * as Player from "../entities/Player";

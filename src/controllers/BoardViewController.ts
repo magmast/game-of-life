@@ -3,6 +3,7 @@ import { pipe } from "fp-ts/function";
 import { useAtom } from "jotai";
 import Konva from "konva";
 import { MutableRefObject, useEffect, useRef } from "react";
+
 import { boardAtom, viewportAtom } from "../atoms";
 import * as Board from "../entities/Board";
 import { Position } from "../entities/Position";
@@ -66,8 +67,8 @@ export const useBoardViewController = (): BoardViewController => {
               offset: viewport.offset,
             }),
             (position) => Viewport.getBoardPosition(position, viewport),
-            (position) => Board.toggleCell(position)
-          )
+            (position) => Board.toggleCell(position),
+          ),
         );
       }
     },

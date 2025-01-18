@@ -15,7 +15,7 @@ const mapHtmlToViewportPosition =
     canvas,
     offset,
   }: HtmlToViewportPositionOptions): ((
-    position: Position.Position
+    position: Position.Position,
   ) => Position.Position) =>
   (position) => {
     const canvasRect = canvas.getBoundingClientRect();

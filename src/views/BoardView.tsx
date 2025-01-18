@@ -1,5 +1,6 @@
 import { Box } from "@mantine/core";
 import { Layer, Rect, Stage } from "react-konva";
+
 import config from "../config";
 import { useBoardViewController } from "../controllers/BoardViewController";
 import * as Position from "../entities/Position";
